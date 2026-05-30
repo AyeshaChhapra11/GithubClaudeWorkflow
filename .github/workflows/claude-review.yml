@@ -11,6 +11,7 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
+      id-token: write # <-- REQUIRED for Anthropic's OIDC authentication
 
     steps:
       - name: Checkout Code
