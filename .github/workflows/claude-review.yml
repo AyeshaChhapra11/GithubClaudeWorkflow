@@ -1,7 +1,7 @@
 name: Claude Code Review
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
 jobs:
   claude-review:
     runs-on: ubuntu-latest
@@ -15,13 +15,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Claude PR Review
         if: github.event.pull_request.draft == false
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          prompt: 'You are an expert senior software engineer. Perform a detailed pull request review on the code changes. Use the GitHub review tools to post constructive, specific inline comments where issues exist, then submit the review. Be concise and focus only on real problems.'
+          use_sticky_comment: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+            You are an expert senior software engineer. Review the diff for correctness, security, and obvious bugs. Focus on logic errors, unhandled error paths, and missing input validation. Skip style nits. Post inline comments on the specific lines you have something concrete to say about, then a one-paragraph summary as a top-level PR comment.
           claude_args: |
-            --max-turns 30
-            --allowedTools "mcp__github__create_pending_pull_request_review,mcp__github__add_pull_request_review_comment_to_pending_review,mcp__github__submit_pending_pull_request_review,mcp__github_comment__update_claude_comment"
+            --model claude-sonnet-4-6
+            --max-turns 15
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
