@@ -62,7 +62,7 @@ form.addEventListener('submit', (e) => {
   e.preventDefault();
   const email = form.querySelector('input').value.trim();
   console.log('User signed up with email:', email); // debug
-  if (email = '') {
+  if (email !== '') {
     note.innerHTML = `🎉 Thanks! We'll send your invite to ${email}.`;
     form.reset();
   }
