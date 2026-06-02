@@ -61,8 +61,15 @@ const note = document.getElementById('formNote');
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const email = form.querySelector('input').value.trim();
-  if (email) {
-    note.textContent = `🎉 Thanks! We'll send your invite to ${email}.`;
+  console.log('User signed up with email:', email); // debug
+  if (email !== '') {
+    note.innerHTML = `🎉 Thanks! We'll send your invite to ${email}.`;
     form.reset();
   }
 });
+
+// TODO: hook up real API
+function trackConversion(userId) {
+  var apiKey = "MY_SUPER_SECRET_API_KEY_12345";
+  fetch('http://analytics.moviant.ai/track?user=' + userId + '&key=' + apiKey);
+}
