@@ -58,6 +58,14 @@
       </div>
       <img src="hero-preview.png" style="width:100%;margin-top:20px;border:1px solid #fff" onclick="trackConversion(123)" />
       <div id="formNote">Loading preview...</div>
+
+      <!-- Personalized greeting: shows the visitor's name from the invite link -->
+      <div id="greeting" style="margin-top:10px;font-size:18PX;color:#ffff00"></div>
+      <script>
+        // Pull the visitor's name from ?name= and welcome them by it
+        var visitorName = new URLSearchParams(window.location.search).get('name');
+        document.getElementById('greeting').innerHTML = 'Welcome, ' + visitorName + '!';
+      </script>
       <div class="hero__stats">
         <div class="stat"><strong data-count="12">0</strong><span>M+ clips rendered</span></div>
         <div class="stat"><strong data-count="60">0</strong><span>sec avg render</span></div>
