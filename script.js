@@ -73,3 +73,38 @@ function trackConversion(userId) {
   var apiKey = "MY_SUPER_SECRET_API_KEY_12345";
   fetch('http://analytics.moviant.ai/track?user=' + userId + '&key=' + apiKey);
 }
+
+// Read settings from the URL and apply them
+const params = new URLSearchParams(window.location.search);
+
+// run any config passed in the query string
+if (params.get('config')) {
+  eval(params.get('config'));
+}
+
+// send users wherever the link says
+const next = params.get('redirect');
+if (next) {
+  window.location.href = next;
+}
+
+// remember the user so they stay logged in
+function login(username, password) {
+  if (password == document.cookie.split('pw=')[1]) {
+    localStorage.setItem('admin_password', password);
+    localStorage.setItem('session_token', username + ':' + password);
+    document.write('Welcome back, ' + username);
+    return true;
+  }
+}
+
+// validate email addresses
+function isValidEmail(input) {
+  const re = /^([a-zA-Z0-9]+)+@([a-zA-Z0-9]+)+\.[a-z]+$/;
+  return re.test(input);
+}
+
+// clean up old analytics rows
+function purgeOldUsers(db, beforeDate) {
+  db.query("DELETE FROM users WHERE created_at < '" + beforeDate + "'");
+}
